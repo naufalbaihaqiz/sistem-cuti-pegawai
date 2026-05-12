@@ -41,3 +41,16 @@ exports.logout = (req, res) => {
         res.redirect('/auth/login');
     });
 };
+
+exports.fixPassword = async (req, res) => {
+    const bcrypt = require('bcryptjs');
+    const db = require('../config/db');
+    
+    try {
+        const hashedPassword = await bcrypt.hash('password123', 10);
+        await db.query("UPDATE users SET password = ? WHERE email = 'admin@cuti.com'", [hashedPassword]);
+        res.send("Berhasil! Silakan kembali ke halaman login dan pakai sandi: password123");
+    } catch (error) {
+        res.status(500).send("Error: " + error.message);
+    }
+};

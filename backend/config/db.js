@@ -11,4 +11,13 @@ const dbPool = mysql.createPool({
     queueLimit: 0
 });
 
+dbPool.getConnection()
+    .then((connection) => {
+        console.log('✅ Sinkronisasi Database Berhasil! Terhubung ke MySQL.');
+        connection.release(); // Lepaskan koneksi setelah dites
+    })
+    .catch((err) => {
+        console.error('❌ Gagal terhubung ke Database:', err.message);
+    });
+
 module.exports = dbPool;
