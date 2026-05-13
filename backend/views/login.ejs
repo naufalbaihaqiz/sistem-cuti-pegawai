@@ -1,16 +1,535 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <title>Login - Sistem Cuti</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Sistem Cuti FTI</title>
+
+  <link rel="stylesheet" href="/style.css" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #ffffff;
+      color: #111827;
+    }
+
+    .login-page {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .login-hero {
+      background:
+        linear-gradient(
+          rgba(107, 114, 128, 0.38),
+          rgba(55, 65, 81, 0.56)
+        ),
+        url("/images/bg-login.jpg");
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 64px;
+      color: #ffffff;
+    }
+
+    .hero-content {
+      max-width: 540px;
+    }
+
+    .hero-kicker {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 9px 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #ffffff;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-title {
+      margin: 0 0 22px;
+      font-size: 48px;
+      line-height: 1.16;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: #ffffff;
+      text-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    }
+
+    .hero-desc {
+      margin: 0;
+      max-width: 520px;
+      font-size: 16px;
+      line-height: 1.85;
+      color: #f3f4f6;
+      text-shadow: 0 4px 14px rgba(0,0,0,0.14);
+    }
+
+    .hero-note {
+      margin-top: 30px;
+      max-width: 520px;
+      padding-left: 18px;
+      border-left: 3px solid rgba(255, 255, 255, 0.38);
+      font-size: 14px;
+      line-height: 1.75;
+      color: #f3f4f6;
+      text-shadow: 0 4px 14px rgba(0,0,0,0.14);
+    }
+
+    .login-side {
+      background:
+        radial-gradient(circle at top right, #f3f4f6 0%, transparent 30%),
+        linear-gradient(to bottom, #ffffff, #f8fafc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 38px;
+    }
+
+    .brand-logo img {
+      width: 66px;
+      height: 66px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .brand-text strong {
+      display: block;
+      font-size: 19px;
+      font-weight: 800;
+      color: #374151;
+      line-height: 1.25;
+    }
+
+    .brand-text span {
+      display: block;
+      margin-top: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #9ca3af;
+    }
+
+    .title {
+      margin: 0 0 8px;
+      font-size: 42px;
+      line-height: 1.15;
+      font-weight: 800;
+      letter-spacing: -0.7px;
+      color: #111827;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .subtitle {
+      margin: 0 0 14px;
+      font-size: 14px;
+      line-height: 1.7;
+      font-weight: 500;
+      color: #6b7280;
+    }
+
+    .title-line {
+        width: 100%;
+        height: 1px;
+        margin: 24px 0 28px;
+        border-radius: 999px;
+        background: linear-gradient(
+            to right,
+            transparent 0%,
+            #d1d5db 18%,
+            #9ca3af 50%,
+            #d1d5db 82%,
+            transparent 100%
+        );
+    }
+
+    .login-card {
+      padding: 34px;
+      border-radius: 26px;
+      border: 1px solid rgba(209, 213, 219, 0.8);
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(18px);
+      box-shadow:
+        0 10px 30px rgba(15, 23, 42, 0.06),
+        0 30px 60px rgba(15, 23, 42, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .login-card:hover {
+      transform: translateY(-4px);
+      box-shadow:
+        0 18px 40px rgba(15, 23, 42, 0.08),
+        0 40px 80px rgba(15, 23, 42, 0.12);
+    }
+
+    .error-card {
+      border: 1px solid #f5c2c7 !important;
+      box-shadow: 0 14px 34px rgba(220, 38, 38, 0.08);
+    }
+
+    .password-alert {
+      margin-bottom: 18px;
+      padding: 14px 15px;
+      border-radius: 14px;
+      background: #fff5f5;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .password-alert strong {
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .floating-group {
+      position: relative;
+      margin-bottom: 22px;
+    }
+
+    .floating-input {
+      width: 100%;
+      height: 54px;
+      border-radius: 14px;
+      background: rgba(249,250,251,0.9);
+      border: 1px solid #e5e7eb;
+      padding: 18px 48px 6px 14px;
+      font-size: 14px;
+      outline: none;
+      transition: 0.22s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .floating-input:hover {
+      background: #f3f4f6;
+      border-color: #d1d5db;
+    }
+
+    .floating-input:focus {
+      background: #ffffff;
+      border-color: #9ca3af;
+      box-shadow: 0 0 0 4px rgba(156, 163, 175, 0.15);
+      transform: translateY(-1px);
+    }
+
+    .floating-label {
+      position: absolute;
+      left: 14px;
+      top: 17px;
+      font-size: 13px;
+      color: #6b7280;
+      pointer-events: none;
+      transition: 0.2s ease;
+    }
+
+    .floating-input:focus + .floating-label,
+    .floating-input:not(:placeholder-shown) + .floating-label {
+      top: 7px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      color: #6b7280;
+    }
+
+    .password-wrap {
+      position: relative;
+    }
+
+    .password-wrap .floating-input {
+      padding-right: 50px;
+    }
+
+    .eye-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 30px;
+      height: 30px;
+      border: none;
+      background: transparent;
+      color: #6b7280;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: 0.2s ease;
+    }
+
+    .eye-btn:hover {
+      background: #e5e7eb;
+      color: #111827;
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .eye-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .login-button {
+      width: 100%;
+      height: 50px;
+      margin-top: 6px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #9ca3af, #6b7280) !important;
+      color: white !important;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      transition: all 0.25s ease;
+      box-shadow: 0 12px 26px rgba(95, 104, 118, 0.28);
+    }
+
+    .login-button:hover {
+      background: linear-gradient(135deg, #717b89, #4b5563) !important;
+      transform: translateY(-2px);
+      box-shadow: 0 16px 34px rgba(95, 104, 118, 0.34);
+    }
+
+    .login-button:active {
+      transform: scale(0.99);
+    }
+
+    .footer {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid #e5e7eb;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    @media(max-width: 900px) {
+      body {
+        height: auto;
+        overflow: auto;
+      }
+
+      .login-page {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+
+      .login-hero {
+        min-height: 50vh;
+        padding: 42px 24px;
+      }
+
+      .login-side {
+        padding: 34px 22px;
+      }
+
+      .hero-title {
+        font-size: 36px;
+      }
+
+      .login-box {
+        max-width: 100%;
+      }
+
+      .title {
+        font-size: 34px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <h2>Login Sistem Cuti</h2>
-    <% if (error) { %> <p style="color: red;"><%= error %></p> <% } %>
-    <form action="/auth/login" method="POST">
-        <input type="email" name="email" placeholder="Email" required><br><br>
-        <input type="password" name="password" placeholder="Password" required><br><br>
-        <button type="submit">Masuk</button>
-    </form>
+  <main class="login-page">
+    <section class="login-hero">
+      <div class="hero-content">
+        <div class="hero-kicker">
+          Fakultas Teknologi Informasi
+        </div>
+
+        <h1 class="hero-title">
+          Sistem Informasi Cuti Pegawai
+        </h1>
+
+        <p class="hero-desc">
+          Portal administrasi cuti pegawai Fakultas Teknologi Informasi
+          untuk membantu proses pengajuan, verifikasi, dan pemantauan
+          cuti secara lebih tertib, transparan, dan terintegrasi.
+        </p>
+
+        <p class="hero-note">
+          Akses sistem menggunakan akun yang telah terdaftar
+          untuk melihat status pengajuan dan proses persetujuan
+          cuti sesuai kewenangan pengguna.
+        </p>
+      </div>
+    </section>
+
+    <section class="login-side">
+      <div class="login-box">
+        <div class="brand">
+          <div class="brand-logo">
+            <img src="/images/logo-unand.jpg" alt="Logo FTI">
+          </div>
+
+          <div class="brand-text">
+            <strong>Fakultas Teknologi Informasi</strong>
+            <span>Universitas Andalas</span>
+          </div>
+        </div>
+
+        <h1 class="title">
+          Selamat Datang
+        </h1>
+
+        <p class="subtitle">
+          Masuk menggunakan akun yang telah terdaftar.
+        </p>
+
+        <div class="title-line"></div>
+
+        <div class="card login-card <%= error === 'Password salah.' ? 'error-card' : '' %>">
+          <form action="/auth/login" method="POST" autocomplete="off">
+            <% if (typeof error !== 'undefined' && error === 'Password salah.') { %>
+              <div class="password-alert">
+                <strong>Password salah</strong>
+                Kata sandi yang Anda masukkan belum sesuai.
+              </div>
+            <% } %>
+
+            <div class="floating-group">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="input floating-input"
+                placeholder=" "
+                autocomplete="off"
+                required
+              />
+              <label for="email" class="floating-label">EMAIL</label>
+            </div>
+
+            <div class="floating-group password-wrap">
+              <input
+                type="password"
+                name="password"
+                id="password"
+                class="input floating-input"
+                placeholder=" "
+                autocomplete="new-password"
+                required
+              />
+
+              <label for="password" class="floating-label">PASSWORD</label>
+
+              <button
+                type="button"
+                class="eye-btn"
+                onclick="togglePassword()"
+                aria-label="Tampilkan atau sembunyikan password"
+              >
+                <svg
+                  id="eyeIcon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.25 12s3.75-6.75 9.75-6.75S21.75 12 21.75 12s-3.75 6.75-9.75 6.75S2.25 12 2.25 12z"
+                  />
+
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="3"
+                    stroke-width="2"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-primary login-button"
+            >
+              Masuk Sekarang
+            </button>
+          </form>
+        </div>
+
+        <div class="footer">
+          © 2026 Fakultas Teknologi Informasi, Universitas Andalas.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function togglePassword() {
+      const passwordInput = document.getElementById("password");
+      const eyeIcon = document.getElementById("eyeIcon");
+
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+
+        eyeIcon.innerHTML = `
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M3 3l18 18M10.58 10.58A2 2 0 0012 14a2 2 0 001.42-.58M9.88 4.24A9.8 9.8 0 0112 4c6 0 9.75 8 9.75 8a17.5 17.5 0 01-2.39 3.34M6.61 6.61C3.74 8.55 2.25 12 2.25 12s3.75 8 9.75 8a9.8 9.8 0 004.06-.88"
+          />
+        `;
+      } else {
+        passwordInput.type = "password";
+
+        eyeIcon.innerHTML = `
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M2.25 12s3.75-6.75 9.75-6.75S21.75 12 21.75 12s-3.75 6.75-9.75 6.75S2.25 12 2.25 12z"
+          />
+
+          <circle
+            cx="12"
+            cy="12"
+            r="3"
+            stroke-width="2"
+          />
+        `;
+      }
+    }
+  </script>
 </body>
 </html>

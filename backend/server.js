@@ -9,6 +9,8 @@ const { requireLogin } = require('./middlewares/authMiddleware');
 
 const app = express();
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -16,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const sessionStore = new MySQLStore({}, dbPool);
+
 app.use(session({
     key: 'cuti_cookie_session',
     secret: process.env.SESSION_SECRET,
@@ -29,8 +32,14 @@ app.use('/auth', authRoutes);
 
 // Route Dashboard Sementara
 app.get('/dashboard', requireLogin, (req, res) => {
-    res.send(`<h1>Halo, ${req.session.name}</h1><a href="/auth/logout">Logout</a>`);
+    res.render('dashboard', {
+        name: req.session.name,
+        roles: req.session.roles || []
+    });
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}/auth/login`));
+
+app.listen(PORT, () =>
+    console.log(`Server running on http://localhost:${PORT}/auth/login`)
+);
