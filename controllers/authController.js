@@ -10,56 +10,49 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const [users] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+        // Menggunakan kueri JOIN agar lebih efisien (1x jalan untuk ambil user sekaligus role)
+        const query = `
+            SELECT users.*, roles.name AS role_name
+            FROM users
+            JOIN model_has_roles ON users.id = model_has_roles.model_id
+            JOIN roles ON model_has_roles.role_id = roles.id
+            WHERE users.email = ? AND model_has_roles.model_type = 'User'
+        `;
 
-        if (users.length === 0) {
-            return res.render('login', { error: 'Email salah.' });
+        const [rows] = await db.query(query, [email]);
+
+        // Jika user ditemukan di database
+        if (rows.length > 0) {
+            const user = rows[0];
+            const isMatch = await bcrypt.compare(password, user.password);
+
+            // Jika password cocok
+            if (isMatch) {
+                req.session.userId = user.id;
+                req.session.name = user.name;
+                
+                // Dibungkus array [user.role_name] agar fungsi roles.map() di dashboard.ejs kamu TIDAK ERROR
+                req.session.roles = [user.role_name]; 
+
+                return res.redirect('/dashboard');
+            }
         }
 
-        const user = users[0];
-
-        const isMatch = await bcrypt.compare(password, user.password);
-
-        if (!isMatch) {
-            return res.render('login', { error: 'Password salah.' });
-        }
-
-        const [roles] = await db.query(
-            `SELECT r.name FROM roles r 
-             JOIN model_has_roles mhr ON r.id = mhr.role_id 
-             WHERE mhr.model_id = ? AND mhr.model_type = 'User'`,
-            [user.id]
-        );
-
-        req.session.userId = user.id;
-        req.session.name = user.name;
-        req.session.roles = roles.map(r => r.name);
-
-        res.redirect('/dashboard');
+        // Pesan error disamaratakan demi keamanan (hacker tidak tahu yang salah email atau passwordnya)
+        return res.render('login', { error: 'Email atau password tidak valid.' });
 
     } catch (err) {
-        console.error(err);
-        res.render('login', { error: 'Terjadi kesalahan server.' });
+        console.error('Database Error:', err);
+        res.status(500).render('login', { error: 'Terjadi kesalahan pada sistem database.' });
     }
 };
 
 exports.logout = (req, res) => {
-    req.session.destroy(() => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.redirect('/dashboard');
+        }
         res.clearCookie('cuti_cookie_session');
         res.redirect('/auth/login');
     });
-};
-
-exports.fixPassword = async (req, res) => {
-    try {
-        const hashedPassword = await bcrypt.hash('password123', 10);
-        await db.query(
-            "UPDATE users SET password = ? WHERE email = 'admin@cuti.com'",
-            [hashedPassword]
-        );
-
-        res.send("Berhasil! Silakan kembali ke halaman login dan pakai sandi: password123");
-    } catch (error) {
-        res.status(500).send("Error: " + error.message);
-    }
 };
